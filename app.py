@@ -272,8 +272,3 @@ st.markdown("""
 - Explore **semantic vectorizers** like **Word2Vec** or **Sentence-BERT**, which learn **dense embeddings** that better reflect the relationships between words and phrases.
 
 """)
-
-    height=400
-).interactive()
-
-st.write(line_chart)
