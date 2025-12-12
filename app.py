@@ -273,43 +273,6 @@ st.markdown("""
 
 """)
 
-import altair as alt
-import pandas as pd
-import joblib
-
-# Load pickled data
-X_train = joblib.load("X_train.pkl")
-X_test = joblib.load("X_test.pkl")
-y_train = joblib.load("y_train.pkl")
-y_test = joblib.load("y_test.pkl")
-
-# Merge back labels
-df_train = X_train.copy()
-df_train['stress_detected'] = y_train
-
-df_test = X_test.copy()
-df_test['stress_detected'] = y_test
-
-# Combine for EDA
-df_all = pd.concat([df_train, df_test], ignore_index=True)
-st.write(df_all.head())
-df_all['date'] = pd.to_datetime(df_all['Date'])
-
-# Aggregate
-daily = df_all.groupby(df_all['date'].dt.date).agg(
-    stress_cases=('stress_detected', 'sum'),
-    total=('stress_detected', 'count')
-).reset_index()
-daily['stress_ratio'] = daily['stress_cases'] / daily['total']
-
-# Chart
-line_chart = alt.Chart(daily).mark_line(point=True).encode(
-    x=alt.X('date:T', title='Date'),
-    y=alt.Y('stress_ratio:Q', title='Stress Ratio'),
-    tooltip=['date:T', 'stress_cases:Q', 'total:Q', alt.Tooltip('stress_ratio:Q', format='.2f')]
-).properties(
-    title="📈 Stress Ratio Over Time (All Data)",
-    width=700,
     height=400
 ).interactive()
 
